@@ -47,8 +47,8 @@ public class AuthService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        String accessToken = jwtUtil.generateAccessToken(user.getUsername()).substring(7);
-        String refreshToken = jwtUtil.generateRefreshToken(user.getUsername()).substring(7);
+        String accessToken = jwtUtil.generateAccessToken(user.getUsername(), user.getUserRole().toString()).substring(7);
+        String refreshToken = jwtUtil.generateRefreshToken(user.getUsername(), user.getUserRole().toString()).substring(7);
 
         RefreshToken savedRefreshToken = new RefreshToken(user.getId().toString(), refreshToken, user.getUsername());
         refreshTokenRepository.save(savedRefreshToken);
@@ -64,6 +64,7 @@ public class AuthService {
 
         String refreshToken = authHeader.substring(7);
         String username = jwtUtil.getUsernameFromToken(refreshToken);
+        String userRole = jwtUtil.getUserRoleFromToken(refreshToken);
         if (jwtUtil.isTokenExpired(refreshToken)) {
             throw new IllegalArgumentException("리프레시 토큰이 만료되었습니다");
         }
@@ -71,8 +72,8 @@ public class AuthService {
         RefreshToken savedRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다"));
 
-        String newAccessToken = jwtUtil.generateAccessToken(username).substring(7);
-        String newRefreshToken = jwtUtil.generateRefreshToken(username).substring(7);
+        String newAccessToken = jwtUtil.generateAccessToken(username, userRole).substring(7);
+        String newRefreshToken = jwtUtil.generateRefreshToken(username, userRole).substring(7);
 
         savedRefreshToken.update(newRefreshToken);
         refreshTokenRepository.save(savedRefreshToken);

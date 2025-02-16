@@ -36,20 +36,22 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String generateAccessToken(String username) {
+    public String generateAccessToken(String username, String userRole) {
         Date date = new Date();
         return BEARER_PREFIX + Jwts.builder()
                 .claim("username", username)
+                .claim("userRole", userRole)
                 .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_EXPIRATION_TIME))
                 .setIssuedAt(date)
                 .signWith(key, signatureAlgorithm)
                 .compact();
     }
 
-    public String generateRefreshToken(String username) {
+    public String generateRefreshToken(String username, String userRole) {
         Date date = new Date();
         return BEARER_PREFIX + Jwts.builder()
                 .claim("username", username)
+                .claim("userRole", userRole)
                 .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_EXPIRATION_TIME))
                 .setIssuedAt(date)
                 .signWith(key, signatureAlgorithm)
@@ -85,6 +87,15 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.get("username", String.class);
+    }
+
+    public String getUserRoleFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("userRole", String.class);
     }
 
     public boolean isTokenExpired(String token) {
