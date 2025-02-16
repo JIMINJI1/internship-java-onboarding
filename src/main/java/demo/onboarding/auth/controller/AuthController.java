@@ -5,6 +5,9 @@ import demo.onboarding.auth.dto.SigninResDto;
 import demo.onboarding.auth.dto.SignupReqDto;
 import demo.onboarding.auth.dto.SignupResDto;
 import demo.onboarding.auth.service.AuthService;
+import demo.onboarding.common.jwt.RefreshTokenResDto;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,4 +31,10 @@ public class AuthController {
         SigninResDto signinResDto = authService.signin(signinReqDto);
         return ResponseEntity.status(HttpStatus.OK).body(signinResDto);
     }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<RefreshTokenResDto> refreshToekn(HttpServletRequest request, HttpServletResponse response) {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.refreshToekn(request, response));
+    }
+
 }
