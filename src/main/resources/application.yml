@@ -16,6 +16,11 @@ spring:
       format_sql: true
     show-sql: true
 
+jwt:
+  secret-key: EtXEwAAJjHfjirNCeftqqqF9RheVbc57hgCt3ERJ9ojYEAkYkwGdiRKY3OuHoWAGDBuMrgvNT4rZ3u9+AZGnag==
+  access-expiration-time: 1800000
+  refresh-expiration-time: 604800000
+
 logging:
   level:
     org.hibernate.orm.jdbc.bind: TRACE
